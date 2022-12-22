@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ThetaECommerceApp.Data;
+using ThetaECommerceApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Add services to the container.
+var CS = builder.Configuration.GetConnectionString("CS");
+builder.Services.AddDbContext<theta_ecommerce_dbContext>(options =>
+    options.UseSqlServer(CS));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -38,7 +44,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Staffs}/{action=Create}/{id?}");
 app.MapRazorPages();
 
 app.Run();

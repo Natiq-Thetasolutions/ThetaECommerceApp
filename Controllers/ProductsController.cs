@@ -12,10 +12,12 @@ namespace ThetaECommerceApp.Controllers
     public class ProductsController : Controller
     {
         private readonly theta_ecommerce_dbContext _context;
+        private readonly IWebHostEnvironment _he;
 
-        public ProductsController(theta_ecommerce_dbContext context)
+        public ProductsController(theta_ecommerce_dbContext context, IWebHostEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: Products
@@ -53,10 +55,29 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,SellerId,Images,Quantity,CategoryId,Price,ShortDescription,LongDescription,DeliveryDays,DeliveryCharges,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,SellerId,Images,Quantity,CategoryId,Price,ShortDescription,LongDescription,DeliveryDays,DeliveryCharges,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Product product,
+            IList<IFormFile> PP)
         {
+            var CommaSperated = "";
+            foreach (var img in PP)
+            {
+                string FinalFilePathVirtual = "/data/staff/pps/" + Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+
+                using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+                {
+                    img.CopyTo(FS);
+                }
+                CommaSperated = CommaSperated+ "," + FinalFilePathVirtual;
+            }
+
+
             if (ModelState.IsValid)
             {
+                if(CommaSperated.StartsWith(','))
+                {
+                    CommaSperated = CommaSperated.Remove(0, 1);
+                }
+                product.Images = CommaSperated;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

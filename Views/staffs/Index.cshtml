@@ -64,8 +64,18 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
+
+                @if(string.IsNullOrEmpty(item.Image))
+                {
+                            
+                        }
+                        else
+                        {
+               <img src="@item.Image" style="max-height:100px;" class="img-fluid img-thumbnail"/>
+            
+                }
+           
+           </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>

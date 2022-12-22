@@ -12,10 +12,12 @@ namespace ThetaECommerceApp.Controllers
     public class staffsController : Controller
     {
         private readonly theta_ecommerce_dbContext _context;
+        private readonly IWebHostEnvironment _he;
 
-        public staffsController(theta_ecommerce_dbContext context)
+        public staffsController(theta_ecommerce_dbContext context, IWebHostEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: staffs
@@ -53,10 +55,21 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Image,Name,Email,PhoneNumber,City,Address,Dob,SystemUserId,Role,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData")] staff staff)
+        public async Task<IActionResult> Create([Bind("Id,Image,Name,Email,PhoneNumber,City,Address,Dob,SystemUserId,Role,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData")] staff staff,
+            IFormFile PP)
         {
+            string FinalFilePathVirtual = "/data/staff/pps/" + Guid.NewGuid().ToString() + Path.GetExtension(PP.FileName);
+
+            using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+            {
+                PP.CopyTo(FS);
+            }
+
+
             if (ModelState.IsValid)
             {
+
+                staff.Image = FinalFilePathVirtual;
                 _context.Add(staff);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
