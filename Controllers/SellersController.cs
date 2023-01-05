@@ -12,10 +12,12 @@ namespace ThetaECommerceApp.Controllers
     public class SellersController : Controller
     {
         private readonly theta_ecommerce_dbContext _context;
+        private readonly IWebHostEnvironment _he;
 
-        public SellersController(theta_ecommerce_dbContext context)
+        public SellersController(theta_ecommerce_dbContext context, IWebHostEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: Sellers
@@ -53,10 +55,18 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Image,CompanyName,WebsiteUrl,Cnic,City,ShortDescription,LongDescription,Email,Gender,PhoneNumber,Address,Dob,SystemUserId,Type,MaritalStatus,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Seller seller)
+        public async Task<IActionResult> Create([Bind("Id,Name,Image,CompanyName,WebsiteUrl,Cnic,City,ShortDescription,LongDescription,Email,Gender,PhoneNumber,Address,Dob,SystemUserId,Type,MaritalStatus,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Seller seller,
+            IFormFile PP)
         {
+            string FinalFilePathVirtual = "/data/seller/" + Guid.NewGuid().ToString() + Path.GetExtension(PP.FileName);
+
+            using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+            {
+                PP.CopyTo(FS);
+            }
             if (ModelState.IsValid)
             {
+                seller.Image = FinalFilePathVirtual;
                 _context.Add(seller);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -85,17 +95,24 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Image,CompanyName,WebsiteUrl,Cnic,City,ShortDescription,LongDescription,Email,Gender,PhoneNumber,Address,Dob,SystemUserId,Type,MaritalStatus,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Seller seller)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Image,CompanyName,WebsiteUrl,Cnic,City,ShortDescription,LongDescription,Email,Gender,PhoneNumber,Address,Dob,SystemUserId,Type,MaritalStatus,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Seller seller,
+            IFormFile PP)
         {
             if (id != seller.Id)
             {
                 return NotFound();
             }
+            string FinalFilePathVirtual = "/data/seller/" + Guid.NewGuid().ToString() + Path.GetExtension(PP.FileName);
 
+            using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+            {
+                PP.CopyTo(FS);
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
+                    seller.Image = FinalFilePathVirtual;
                     _context.Update(seller);
                     await _context.SaveChangesAsync();
                 }

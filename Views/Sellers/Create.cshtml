@@ -10,17 +10,18 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                @*<input asp-for="Image" class="form-control" />*@
+                <input id="PP" name="PP" type="file" class="form-control"/>
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CompanyName" class="control-label"></label>
@@ -39,7 +40,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
+                @*<input asp-for="City" class="form-control" />*@
+                <select asp-for="City" class="form-control">
+                    <option value="">--- please select ---</option>
+                    <option value="1">Sialkot</option>
+                    <option value="2">Lahore</option>
+                    <option value="3">Karachi</option>
+                </select>
                 <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -59,7 +66,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
+                @*<input asp-for="Gender" class="form-control" />*@
+                <select asp-for="Gender" class="form-control">
+                    <option value="">--- please select ---</option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                </select>
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -77,7 +89,7 @@
                 <input asp-for="Dob" class="form-control" />
                 <span asp-validation-for="Dob" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*            <div class="form-group">
                 <label asp-for="SystemUserId" class="control-label"></label>
                 <input asp-for="SystemUserId" class="form-control" />
                 <span asp-validation-for="SystemUserId" class="text-danger"></span>
@@ -86,13 +98,19 @@
                 <label asp-for="Type" class="control-label"></label>
                 <input asp-for="Type" class="form-control" />
                 <span asp-validation-for="Type" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="MaritalStatus" class="control-label"></label>
-                <input asp-for="MaritalStatus" class="form-control" />
+                @*<input asp-for="MaritalStatus" class="form-control" />*@
+                <select asp-for="MaritalStatus" class="form-control">
+                    <option value="">--- please select ---</option>
+                    <option value="1">Single</option>
+                    <option value="2">Engaged</option>
+                    <option value="3">Married</option>
+                </select>
                 <span asp-validation-for="MaritalStatus" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*            <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
                 <input asp-for="Status" class="form-control" />
                 <span asp-validation-for="Status" class="text-danger"></span>
@@ -126,7 +144,7 @@
                 <label asp-for="SeoData" class="control-label"></label>
                 <input asp-for="SeoData" class="form-control" />
                 <span asp-validation-for="SeoData" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

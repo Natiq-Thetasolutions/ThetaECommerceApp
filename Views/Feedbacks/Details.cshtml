@@ -7,8 +7,27 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Feedback</h4>
-    <hr />
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-12">
+                    @{
+                        string[] AllImages = Model.Images.Split(',');
+                    }
+                    <img src="@AllImages[0]" class="largeimage" style="min-height:300px; max-height:300px;" alt="" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    @for (int i = 0; i < AllImages.Length; i++)
+                    {
+                        <img src="@AllImages[i]" class="img-thumbnail smallimages" style="max-height:100px;" alt="" />
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CustomerId)
@@ -65,6 +84,8 @@
             @Html.DisplayFor(model => model.ModifiedDate)
         </dd>
     </dl>
+    </div>
+    </div>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

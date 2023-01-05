@@ -12,10 +12,12 @@ namespace ThetaECommerceApp.Controllers
     public class CustomersController : Controller
     {
         private readonly theta_ecommerce_dbContext _context;
+        private readonly IWebHostEnvironment _he;
 
-        public CustomersController(theta_ecommerce_dbContext context)
+        public CustomersController(theta_ecommerce_dbContext context, IWebHostEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: Customers
@@ -53,10 +55,17 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Image,City,PhoneNumber,Address,Dob,SystemUserId,Gender,Email,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,Name,Image,City,PhoneNumber,Address,Dob,SystemUserId,Gender,Email,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData")] Customer customer,
+            IFormFile PP)
         {
+            string FinalFilePathVirtual = "/data/customer/" + Guid.NewGuid().ToString() + Path.GetExtension(PP.FileName);
+            using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+            {
+                PP.CopyTo(FS);
+            }
             if (ModelState.IsValid)
             {
+                customer.Image = FinalFilePathVirtual;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -85,17 +94,23 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Image,City,PhoneNumber,Address,Dob,SystemUserId,Gender,Email,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Image,City,PhoneNumber,Address,Dob,SystemUserId,Gender,Email,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData")] Customer customer,
+            IFormFile PP)
         {
             if (id != customer.Id)
             {
                 return NotFound();
             }
-
+            string FinalFilePathVirtual = "/data/customer/" + Guid.NewGuid().ToString() + Path.GetExtension(PP.FileName);
+            using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+            {
+                PP.CopyTo(FS);
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
+                    customer.Image = FinalFilePathVirtual;
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }

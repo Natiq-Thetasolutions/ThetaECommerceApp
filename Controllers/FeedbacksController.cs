@@ -12,10 +12,12 @@ namespace ThetaECommerceApp.Controllers
     public class FeedbacksController : Controller
     {
         private readonly theta_ecommerce_dbContext _context;
+        private readonly IWebHostEnvironment _he;
 
-        public FeedbacksController(theta_ecommerce_dbContext context)
+        public FeedbacksController(theta_ecommerce_dbContext context, IWebHostEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: Feedbacks
@@ -53,10 +55,27 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CustomerId,OrderId,Feedback1,Images,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Feedback feedback)
+        public async Task<IActionResult> Create([Bind("Id,CustomerId,OrderId,Feedback1,Images,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Feedback feedback,
+            IList<IFormFile> PP)
         {
+            var CommaSperated = "";
+            foreach (var img in PP)
+            {
+                string FinalFilePathVirtual = "/data/feedback/" + Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+
+                using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+                {
+                    img.CopyTo(FS);
+                }
+                CommaSperated = CommaSperated + "," + FinalFilePathVirtual;
+            }
             if (ModelState.IsValid)
             {
+                if (CommaSperated.StartsWith(','))
+                {
+                    CommaSperated = CommaSperated.Remove(0, 1);
+                }
+                feedback.Images = CommaSperated;
                 _context.Add(feedback);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -85,17 +104,33 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,OrderId,Feedback1,Images,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Feedback feedback)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,OrderId,Feedback1,Images,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Feedback feedback,
+            IList<IFormFile> PP)
         {
             if (id != feedback.Id)
             {
                 return NotFound();
             }
+            var CommaSperated = "";
+            foreach (var img in PP)
+            {
+                string FinalFilePathVirtual = "/data/feedback/" + Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
 
+                using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+                {
+                    img.CopyTo(FS);
+                }
+                CommaSperated = CommaSperated + "," + FinalFilePathVirtual;
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (CommaSperated.StartsWith(','))
+                    {
+                        CommaSperated = CommaSperated.Remove(0, 1);
+                    }
+                    feedback.Images = CommaSperated;
                     _context.Update(feedback);
                     await _context.SaveChangesAsync();
                 }

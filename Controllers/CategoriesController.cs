@@ -12,10 +12,12 @@ namespace ThetaECommerceApp.Controllers
     public class CategoriesController : Controller
     {
         private readonly theta_ecommerce_dbContext _context;
+        private readonly IWebHostEnvironment _he;
 
-        public CategoriesController(theta_ecommerce_dbContext context)
+        public CategoriesController(theta_ecommerce_dbContext context, IWebHostEnvironment he)
         {
             _context = context;
+            _he = he;
         }
 
         // GET: Categories
@@ -53,10 +55,27 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Images,Description,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Images,Description,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Category category,
+            IList<IFormFile> PP)
         {
+            var CommaSperated = "";
+            foreach (var img in PP)
+            {
+                string FinalFilePathVirtual = "/data/catagory/" + Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
+
+                using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+                {
+                    img.CopyTo(FS);
+                }
+                CommaSperated = CommaSperated + "," + FinalFilePathVirtual;
+            }
             if (ModelState.IsValid)
             {
+                if (CommaSperated.StartsWith(','))
+                {
+                    CommaSperated = CommaSperated.Remove(0, 1);
+                }
+                category.Images = CommaSperated;
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -85,17 +104,33 @@ namespace ThetaECommerceApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Images,Description,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Images,Description,Status,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,MetaData,SeoData")] Category category,
+            IList<IFormFile> PP)
         {
             if (id != category.Id)
             {
                 return NotFound();
             }
+            var CommaSperated = "";
+            foreach (var img in PP)
+            {
+                string FinalFilePathVirtual = "/data/catagory/" + Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
 
+                using (FileStream FS = new FileStream(_he.WebRootPath + FinalFilePathVirtual, FileMode.Create))
+                {
+                    img.CopyTo(FS);
+                }
+                CommaSperated = CommaSperated + "," + FinalFilePathVirtual;
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (CommaSperated.StartsWith(','))
+                    {
+                        CommaSperated = CommaSperated.Remove(0, 1);
+                    }
+                    category.Images = CommaSperated;
                     _context.Update(category);
                     await _context.SaveChangesAsync();
                 }

@@ -49,10 +49,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                    @{
+                        var sperated = item.Images.Split(",");
+                    }
+                    @if (string.IsNullOrEmpty(sperated[0]))
+                    {
+
+                    }
+                    else
+                    {
+                        <img src="@sperated[0]" style="max-height:100px;" class="img-fluid img-thumbnail" />
+                    }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Images)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
@@ -87,3 +97,22 @@
 }
     </tbody>
 </table>
+
+
+@section Scripts{
+    <script>
+
+        $(function(){
+
+            $('table').DataTable({
+            
+                scrollY: 200,
+                scrollX: true,
+            
+            });
+
+});
+    </script>
+    
+
+}

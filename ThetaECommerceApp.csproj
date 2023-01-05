@@ -22,6 +22,9 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\data\customer\" />
+    <Folder Include="wwwroot\data\catagory\" />
+    <Folder Include="wwwroot\data\feedback\" />
+    <Folder Include="wwwroot\data\products\" />
     <Folder Include="wwwroot\data\seller\" />
   </ItemGroup>
 

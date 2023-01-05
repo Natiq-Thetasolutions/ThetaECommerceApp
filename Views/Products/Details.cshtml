@@ -23,7 +23,7 @@
                         string[] AllImages = Model.Images.Split(',');
 
                     }
-                    <img src="@AllImages[0]" class="largeimage" style="min-height:300px; max-height:500px;" alt="" />
+                    <img src="@AllImages[0]" class="largeimage" style="min-height:300px; max-height:300px;" alt="" />
 
                 </div>
             </div>
@@ -100,7 +100,16 @@
             @Html.DisplayFor(model => model.Quantity)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryId)
+                    @{
+                        var Categories = ViewBag.Categories;
+                    }
+
+                    <select asp-for="CategoryId" class="form-control" disabled>
+                        @foreach (Category C in Categories)
+                        {
+                            <option value="@C.Id">@C.Name</option>
+                        }
+                    </select>
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CategoryId)
@@ -197,36 +206,35 @@
 </div>
 
 
+
+<div id="RI" class="d-inline-flex">
+
+   
+    
+</div>
+
+
+
 @section Scripts{
 
-    <script>
-    
+<script>
+
+
     $(function(){
     
-    $(".smallimages").click(function(){
-    
-        var clickedImage = $(this);
-        //alert(clickedImage.attr("src"));
-
-$(".largeimage").attr("src",clickedImage.attr("src"));
-
-    
-    });
     
     
+    $('#RI').load('/Products/GetRI?id=@Model.Id&cid=@Model.CategoryId');
     
     
     
     });
-    
-    
-    
-    
-    </script>
+
+</script>
+
 
 
 }
-
 
 
 
