@@ -83,9 +83,11 @@
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
+            
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
+                    <span id="counter1" class="bg-info"></span>
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.SellerId)
@@ -222,7 +224,21 @@
 
     $(function(){
     
+    $('#counter1').load("/Products/GetCounter?id=@Model.Id");
+
+
+    $.ajax({
     
+    url:'/Products/UpdateCounter',
+    type:'POST',
+    data:{id=@Model.Id}
+    
+    
+    });
+
+
+
+
     
     $('#RI').load('/Products/GetRI?id=@Model.Id&cid=@Model.CategoryId');
     

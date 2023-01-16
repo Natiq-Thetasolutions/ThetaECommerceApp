@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -69,6 +71,52 @@ namespace ThetaECommerceApp.Controllers
                 seller.Image = FinalFilePathVirtual;
                 _context.Add(seller);
                 await _context.SaveChangesAsync();
+
+                //send welcome email to seller
+                if (!string.IsNullOrEmpty(seller.Email))
+                {
+                    MailMessage oEmail = new MailMessage();
+
+                    oEmail.Subject = "Welcome <b>"+seller.Name+"</b> to Theta Solutions";
+                    oEmail.Body = "Welcome " + seller.Name + ",<br><br>" +
+                        "Thank you for signing up on our system. feel free to contact us if you need any help.<br><br>" +
+                        "Regards,<br> <span style='color:green;'>Theta Support Team</span>";
+                    oEmail.To.Add(seller.Email);
+                    oEmail.CC.Add("info@thetasolutions.pk");
+                    oEmail.Bcc.Add("natiqbutt2018@gmail.com");
+
+
+
+                    oEmail.From = new MailAddress("students@thetademos.com","Theta Solutions");
+
+                   oEmail.Attachments.Add(new Attachment(_he.WebRootPath+FinalFilePathVirtual));
+
+
+                    SmtpClient oSMTP = new SmtpClient();
+                    oSMTP.Port = 465;
+                    oSMTP.Host = "mail.thetademos.com";
+                    oSMTP.Credentials = new NetworkCredential("students@thetademos.com", "P@kist@n@@123");
+
+                    oSMTP.EnableSsl = true;
+                    try { 
+                    oSMTP.Send(oEmail);
+                         }
+                    catch(Exception ex)
+                    {
+
+                    }
+                
+                
+                
+                
+                
+                }
+
+
+
+
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(seller);

@@ -187,6 +187,20 @@ namespace ThetaECommerceApp.Controllers
         }
 
 
+        public string GetCounter(int id)
+        { 
+            return _context.Products.Find(id).NoOfViews.ToString();
+        }
+
+        public void UpdateCounter(int id)
+        {
+            Product P =  _context.Products.Find(id);
+            P.NoOfViews = P.NoOfViews++;
+
+            _context.Update(P);
+            _context.SaveChanges();
+        }
+
         public string GetRI(int id, int cid)
         {
             //System.Threading.Thread.Sleep(6000);

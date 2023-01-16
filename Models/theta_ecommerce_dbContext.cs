@@ -399,6 +399,8 @@ namespace ThetaECommerceApp.Models
                     .HasColumnName("short_description");
 
                 entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.Property(e => e.NoOfViews).HasColumnName("no_of_views");
             });
 
             modelBuilder.Entity<Rating>(entity =>

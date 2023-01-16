@@ -82,18 +82,22 @@
             </td>
                 <td>
                     @{
-                        var sperated = item.Images.Split(",");
+                        string[] sperated = null;
+                        if (!string.IsNullOrEmpty(item.Images))
+                        {
+                            sperated = item.Images.Split(',');
+
+                            if (string.IsNullOrEmpty(sperated[0]))
+                            {
+
+                            }
+                            else
+                            {
+                                <img src="@sperated[0]" style="max-height:100px;" class="img-fluid img-thumbnail" />
+                            }
+                        }
                     }
-                @if(string.IsNullOrEmpty(sperated[0]))
-                {
-                            
-                }
-                else
-                {
-                    <img src="@sperated[0]" style="max-height:100px;" class="img-fluid img-thumbnail"/>
-                }
-           
-           </td>
+                </td>
             <td class="pname" data-pid="@item.Id">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>

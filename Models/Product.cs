@@ -17,6 +17,8 @@ namespace ThetaECommerceApp.Models
         public int? DeliveryDays { get; set; }
         public int? DeliveryCharges { get; set; }
         public int? Status { get; set; }
+
+        public int NoOfViews { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string? ModifiedBy { get; set; }
