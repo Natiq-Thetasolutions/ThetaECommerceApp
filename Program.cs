@@ -11,6 +11,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(o => {
+
+    o.IdleTimeout = TimeSpan.FromMinutes(60);
+});
+
+
 // Add services to the container.
 var CS = builder.Configuration.GetConnectionString("CS");
 builder.Services.AddDbContext<theta_ecommerce_dbContext>(options =>
@@ -41,10 +48,11 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Staffs}/{action=Create}/{id?}");
+    pattern: "{controller=SystemUsers}/{action=Login}/{id?}");
 app.MapRazorPages();
 
 app.Run();

@@ -23,7 +23,22 @@ namespace ThetaECommerceApp.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Products.ToListAsync());
+
+            if(string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+                    {
+                return RedirectToAction("Login","SystemUsers");
+            }
+
+            ViewBag.Name = "Theta Solutions in View";
+
+            HttpContext.Session.SetString("CompanyName", "Theta Solutions");
+
+            HttpContext.Session.SetString("CompanyWebsite", "www.thetasolutions.pk");
+
+
+
+
+            return View(await _context.Products.ToListAsync());
         }
 
         // GET: Products/Details/5

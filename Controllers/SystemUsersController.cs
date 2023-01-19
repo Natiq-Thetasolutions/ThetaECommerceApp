@@ -18,6 +18,47 @@ namespace ThetaECommerceApp.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(SystemUser U)
+        {
+            SystemUser Found =  _context.SystemUsers.Where(a => a.Username == U.Username && a.Password == U.Password).FirstOrDefault();
+           
+            
+            if(Found == null)
+            {
+                ViewBag.Error = "Invalid Username and Password";
+                return View();
+            }
+
+
+            //succesful login
+
+            HttpContext.Session.SetString("Username", Found.Username);
+            HttpContext.Session.SetString("Userid", Found.Id.ToString());
+            HttpContext.Session.SetString("UserType", Found.Type.Value.ToString());
+            return RedirectToAction("Index", "Products");
+        }
+
+
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "SystemUsers");
+        }
+
+
+
+
+
+
+
         // GET: SystemUsers
         public async Task<IActionResult> Index()
         {

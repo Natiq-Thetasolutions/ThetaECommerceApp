@@ -76,9 +76,10 @@
                 <a asp-action="Details" class="btn btn-info btn-lg" asp-route-id="@item.Id"><i class="bi bi-clipboard-data"></i> Details</a> 
                 @*<a asp-action="Delete" class="btn btn-danger btn-lg" asp-route-id="@item.Id"><i class="bi bi-trash"></i> Delete</a>*@
 
-
+                @if(Context.Session.GetString("UserType") == "1")
+                {
                     <a href="#" data-pid="@item.Id" class="deletebutton btn btn-danger btn-lg"><i class="bi bi-trash"></i> Delete</a>
-            
+                }
             </td>
                 <td>
                     @{

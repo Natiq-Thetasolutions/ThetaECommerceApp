@@ -25,6 +25,7 @@ namespace ThetaECommerceApp.Controllers
         // GET: Sellers
         public async Task<IActionResult> Index()
         {
+            ViewBag.CompanyName = HttpContext.Session.GetString("CompanyName");
               return View(await _context.Sellers.ToListAsync());
         }
 
